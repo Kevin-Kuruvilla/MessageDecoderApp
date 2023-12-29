@@ -68,6 +68,4 @@ def vigenere_cipher(text, key):
         else:
             result += char
 
-
-    print(vigenere_table[("a", "0")])
     return result
