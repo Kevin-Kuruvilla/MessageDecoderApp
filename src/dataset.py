@@ -29,4 +29,15 @@ def create_dataset(num_samples):
             random_key = ''.join([random.choice(keys) for _ in range(10)])
             messages[i] = vigenere_cipher(messages[i], random_key)
 
-    return messages, labels
+    # 80% of data for training, rest for testing
+    training_size = int(len(messages) * 0.8)
+
+    # sentences
+    training_sentences = messages[0:training_size]
+    testing_sentences = messages[training_size:]
+
+    # labels
+    training_labels = labels[0:training_size]
+    testing_labels = labels[training_size:]
+
+    return training_sentences, testing_sentences, training_labels, testing_labels

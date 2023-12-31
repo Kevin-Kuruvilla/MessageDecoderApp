@@ -8,63 +8,63 @@ from keras_preprocessing.sequence import pad_sequences
 from dataset import create_dataset
 
 class MessageClassifier:
-    def __init__(self, num_samples, vocab_size, oov_tok, max_length, padding_type, trunc_type, embedding_dim, num_epochs):
+    def __init__(self, num_samples, vocab_size, max_length, embedding_dim, num_epochs):
+        self.num_samples = num_samples
         self.vocab_size = vocab_size
-        self.oov_tok = oov_tok
         self.max_length = max_length
-        self.padding_type = padding_type
-        self.trunc_type = trunc_type
         self.embedding_dim = embedding_dim
         self.num_epochs = num_epochs
-        self.num_samples = num_samples
+        self.padding_type = 'post'
+        self.trunc_type = 'post'
+        self.oov_tok = "<OOV>"
+        self.model, self.tokenizer = self.__get_model()
+
+    def __get_model(self):
+        model = None
+        tokenizer = None
 
         # check if model is already trained
         if os.path.exists("out/trained_model.h5") and os.path.exists("out/tokenizer.pickle"):
             print("Loading existing model.")
 
-            self.model = load_model("out/trained_model.h5")
+            model = load_model("out/trained_model.h5")
             with open("out/tokenizer.pickle", 'rb') as handle:
-                self.tokenizer = pickle.load(handle)
+                tokenizer = pickle.load(handle)
 
             print("Model and tokenizer loaded.")
         else:
             print("Model not found, creating new one...")
-            self.__build_model()
+            model, tokenizer = self.__build_model()
 
-    def __build_model(self):
-        # dataset
-        messages, labels = create_dataset(self.num_samples)
+            print("Model created, saving...")
+            model.save("out/trained_model.h5")
+            with open("out/tokenizer.pickle", 'wb') as handle:
+                pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-        # 80% of data for training, rest for testing
-        training_size = int(len(messages) * 0.8)
+            print("Model trained and saved.")
 
-        # sentences
-        training_sentences = messages[0:training_size]
-        testing_sentences = messages[training_size:]
-
-        # labels
-        training_labels = labels[0:training_size]
-        testing_labels = labels[training_size:]
-
-        # set up tokenizer
-        self.tokenizer = Tokenizer(num_words=self.vocab_size, oov_token=self.oov_tok)
-        self.tokenizer.fit_on_texts(training_sentences)
-
-        # preprocess training data
-        training_sequences = self.tokenizer.texts_to_sequences(training_sentences)
-        training_padded = pad_sequences(training_sequences, maxlen=self.max_length, 
+        return model, tokenizer
+    
+    def __preprocess_data(self, tokenizer, raw_text, raw_labels):
+        # convert words to sequences and add padding
+        sequences = tokenizer.texts_to_sequences(raw_text)
+        padded_sequences = pad_sequences(sequences, maxlen=self.max_length, 
                                         padding=self.padding_type, truncating=self.trunc_type)
 
-        # preprocess testing data
-        testing_sequences = self.tokenizer.texts_to_sequences(testing_sentences)
-        testing_padded = pad_sequences(testing_sequences, maxlen=self.max_length, 
-                                    padding=self.padding_type, truncating=self.trunc_type)
+        # convert lists into numpy arrays to make it work with TensorFlow 2.
+        return np.array(padded_sequences), np.array(raw_labels)
 
-        # convert lists into numpy arrays to make it work with TensorFlow 2.x
-        training_padded = np.array(training_padded)
-        training_labels = np.array(training_labels)
-        testing_padded = np.array(testing_padded)
-        testing_labels = np.array(testing_labels)
+    def __build_model(self):
+        # get training and testing data
+        training_sentences, testing_sentences, training_labels, testing_labels = create_dataset(self.num_samples)
+
+        # set up tokenizer
+        tokenizer = Tokenizer(num_words=self.vocab_size, oov_token=self.oov_tok)
+        tokenizer.fit_on_texts(training_sentences)
+        
+        # preprocess data
+        training_padded, training_labels = self.__preprocess_data(tokenizer, training_sentences, training_labels)
+        testing_padded, testing_labels = self.__preprocess_data(tokenizer, testing_sentences, testing_labels)
 
         # define model
         print("Creating model...")
@@ -87,15 +87,7 @@ class MessageClassifier:
                   epochs=self.num_epochs,
                   validation_data=(testing_padded, testing_labels))
 
-        # save model
-        print("Saving model...")
-
-        self.model = model
-        self.model.save("out/trained_model.h5")
-        with open("out/tokenizer.pickle", 'wb') as handle:
-            pickle.dump(self.tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-        print("Model trained and saved.")
+        return model, tokenizer
 
     def predict_message(self, message):
         sequences = self.tokenizer.texts_to_sequences([message])
