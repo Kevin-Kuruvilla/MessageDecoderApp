@@ -17,13 +17,14 @@ message = "This message is caesar message"
 caesar_message = caesar_cipher(message, 5)
 vigenere_message = vigenere_cipher(message, "KEY")
 
-# Test example messages
-if classifier.predict_message(caesar_message) > 0.5:
-    print("caesar text")
-else:
-    print("vigenere text")
+# Create demo
+def demo(message):
+    print(f"{message} is encrypted with the ", end='')
+    if classifier.predict_message(message) > 0.5:
+        print("caesar cipher")
+    else:
+        print("vigenere cipher")
 
-if classifier.predict_message(vigenere_message) > 0.5:
-    print("caesar text")
-else:
-    print("vigenere text")
+demo(caesar_message)
+demo(vigenere_message)
+print()

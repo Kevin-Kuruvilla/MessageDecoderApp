@@ -23,25 +23,28 @@ class MessageClassifier:
         model = None
         tokenizer = None
 
+        # Disable info messages from tensorflow
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
+
         # check if model is already trained
         if os.path.exists("out/trained_model.h5") and os.path.exists("out/tokenizer.pickle"):
-            print("Loading existing model.")
+            print("\nLoading existing model.")
 
             model = load_model("out/trained_model.h5")
             with open("out/tokenizer.pickle", 'rb') as handle:
                 tokenizer = pickle.load(handle)
 
-            print("Model and tokenizer loaded.")
+            print("Model and tokenizer loaded.\n")
         else:
-            print("Model not found, creating new one...")
+            print("\nModel not found, creating new one...")
             model, tokenizer = self.__build_model()
 
-            print("Model created, saving...")
+            print("\nModel created, saving...")
             model.save("out/trained_model.h5")
             with open("out/tokenizer.pickle", 'wb') as handle:
                 pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-            print("Model trained and saved.")
+            print("Model trained and saved.\n")
 
         return model, tokenizer
     
@@ -67,7 +70,7 @@ class MessageClassifier:
         testing_padded, testing_labels = self.__preprocess_data(tokenizer, testing_sentences, testing_labels)
 
         # define model
-        print("Creating model...")
+        print("\nCreating model...")
         model = Sequential([
             Embedding(self.vocab_size, self.embedding_dim, input_length=self.max_length),
             Conv1D(64, 5, activation='relu'),
@@ -81,7 +84,7 @@ class MessageClassifier:
         model.summary()
 
         # train model
-        print("Training model...")
+        print("\nTraining model...")
         model.fit(training_padded,
                   training_labels,
                   epochs=self.num_epochs,
