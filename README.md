@@ -1,5 +1,27 @@
 # MessageDecoderApp
- App that allows users to encrypt and decrypt messages using machine learning and cryptography. 
 
-# SETUP
- In the data directory, add your `kaggle.json` API credentials from Kaggle website then run the `setup.h` script to download the `data.csv` file (227 MB). You should now see `data.csv` appear in the data directory.
+## Overview
+MessageDecoderApp is a sophisticated tool for encrypting and decrypting messages. It employs novel NLP and cryptography techniques to detect patterns in encrypted text and accurately decrypts them.
+
+## Features
+- **Encryption & Decryption**: Utilize the Caesar Cipher and Vigenere Cipher for secure message handling.
+- **Classify ciphers**: The MessageClassifier module can distinguish between Caesar and Vigenere Ciphers with 97% accuracy.
+- **User-Friendly Interface:**: The classifier autonomously recognizes and solves messages, eliminating manual cipher identification.
+
+## Requirements
+- Python 3.10 (Note: Not compatible with Python 3.11)
+- Kaggle API credentials
+- Additional libraries as per `requirements.txt`
+
+## Installation
+
+1. Clone the repository to your local machine.
+2. Install dependencies using `pip install -r requirements.txt` (recommended within a virtual environment).
+3. Add your `kaggle.json` API credentials in the `data` directory.
+4. Run the `setup.h` script to download the data.csv file (227 MB).
+
+## Usage
+- Execute `__init__.py` to start the application.
+
+## Acknowledgements
+- This project with in collaboration with [Jason Jee](https://github.com/jjeeeeee) who made the encryption and decryption algorithms in this project.
