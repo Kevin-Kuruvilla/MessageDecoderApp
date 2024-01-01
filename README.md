@@ -1,15 +1,15 @@
 # MessageDecoderApp
 
 ## Overview
-MessageDecoderApp is a tool for quickly encrypting and decrypting messages. It employs novel NLP and cryptography techniques to detect patterns in encrypted text and accurately decrypts them.
+MessageDecoderApp is a tool for quickly encrypting and decrypting messages. It employs NLP and cryptography techniques to detect patterns in encrypted text and accurately decrypts them.
 
 ## Features
 - **Encryption & Decryption**: Utilize the Caesar Cipher and Vigenere Cipher for secure message handling.
 - **Classify ciphers**: The MessageClassifier module can distinguish between Caesar and Vigenere Ciphers with 97% accuracy.
-- **User-Friendly Interface:**: The classifier autonomously recognizes and solves messages, eliminating manual cipher identification.
+- **User-Friendly Interface**: The classifier autonomously recognizes and solves messages, eliminating manual cipher identification.
 
 ## Requirements
-- Python 3.10 (Note: Not compatible with Python 3.11)
+- Python 3.10.8 (Note: Not compatible with Python 3.11)
 - Kaggle API credentials
 - Additional libraries as per `requirements.txt`
 
