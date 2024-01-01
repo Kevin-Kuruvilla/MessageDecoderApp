@@ -1,7 +1,7 @@
 # MessageDecoderApp
 
 ## Overview
-MessageDecoderApp is a sophisticated tool for encrypting and decrypting messages. It employs novel NLP and cryptography techniques to detect patterns in encrypted text and accurately decrypts them.
+MessageDecoderApp is a tool for quickly encrypting and decrypting messages. It employs novel NLP and cryptography techniques to detect patterns in encrypted text and accurately decrypts them.
 
 ## Features
 - **Encryption & Decryption**: Utilize the Caesar Cipher and Vigenere Cipher for secure message handling.
@@ -24,4 +24,4 @@ MessageDecoderApp is a sophisticated tool for encrypting and decrypting messages
 - Execute `__init__.py` to start the application.
 
 ## Acknowledgements
-- This project with in collaboration with [Jason Jee](https://github.com/jjeeeeee) who made the encryption and decryption algorithms in this project.
+- This project was in collaboration with [Jason Jee](https://github.com/jjeeeeee) who made the encryption and decryption algorithms in this project.
