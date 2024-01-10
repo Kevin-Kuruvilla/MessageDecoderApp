@@ -7,8 +7,16 @@ from keras_preprocessing.text import Tokenizer
 from keras_preprocessing.sequence import pad_sequences
 from dataset import create_dataset
 
+# Parameters for message classifier
+num_samples = 100_000
+vocab_size = 10_000
+max_length = 120
+embedding_dim = 16
+num_epochs = 4
+
+
 class MessageClassifier:
-    def __init__(self, num_samples, vocab_size, max_length, embedding_dim, num_epochs):
+    def __init__(self):
         self.num_samples = num_samples
         self.vocab_size = vocab_size
         self.max_length = max_length
