@@ -14,7 +14,6 @@ max_length = 120
 embedding_dim = 16
 num_epochs = 4
 
-
 class MessageClassifier:
     def __init__(self):
         self.num_samples = num_samples
