@@ -42,9 +42,17 @@ def rsacipher(text, key):
   text_chars = list(text)
 
   for i in range(len(text_chars)):
+    iterations = e
     char = text_chars[i]
+    message = 1
+    multiplier = ord(char)
+    
+    while(iterations > 0):
+      message *= multiplier
+      message %= n
+      iterations -= 1
 
-    text_chars[i] = str((ord(char) ** e) % n)
+    text_chars[i] = str(message)
   
   return text_chars
 
@@ -55,12 +63,21 @@ def rsadecipher(ciphertext, key):
   deciphered_text = ""
   
   for num in ciphertext:
-    deciphered_text += chr((int(num) ** d) % n)
+    iterations = d
+    char = 1
+    multiplier = int(num)
+    
+    while(iterations > 0):
+      char *= multiplier
+      char %= n
+      iterations -= 1
+    
+    deciphered_text += chr(char)
   
   return ''.join(deciphered_text)
 
 # Example input/output
-cipher = rsacipher("Test Message!", (457, 863, 11))
+cipher = rsacipher("Test Message", (457, 863, 11))
 ciphertext = ''.join(cipher)
 print(ciphertext)
 message = rsadecipher(cipher, (214403, (457*863)))
