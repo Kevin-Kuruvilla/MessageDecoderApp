@@ -1,8 +1,11 @@
+import re
+
 def affine_cipher(text, key):
     a = key[0]
     b = key[1]
     ALPHABET_LENGTH = 26
-    text_chars = list(text)
+    cleaned_text = re.sub(r'[^A-Za-z0-9 ]', '', text) # remove special characters
+    text_chars = list(cleaned_text)
 
     for i in range(len(text_chars)):
         char = text_chars[i]

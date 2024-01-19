@@ -26,58 +26,52 @@ def modular_inverse(a, m):
     print("Module inverse does not exist")
     return None
   else:
+    print(f"Modular inverse: {t % m}")
     return t % m
   
 
 def rsacipher(text, key):  
-  text = text.upper()
-  
   p = key[0]
   q = key[1]
   n = p * q
   k = (p - 1) * (q - 1)
   
   e = key[2]
-  mod_inverse = modular_inverse(e, k)
-  print(f"Modular inverse: {mod_inverse}")
+  # modular_inverse(e, k)
   
   text_chars = list(text)
 
   for i in range(len(text_chars)):
+    iterations = e
     char = text_chars[i]
+    message = 1
+    multiplier = ord(char)
+    
+    while(iterations > 0):
+      message *= multiplier
+      message %= n
+      iterations -= 1
 
-    if(char.isalpha()):
-      num_char = ord(char) - ord('A') + 1
-    elif(ord(char) == 32):
-      num_char = 0
-    
-    text_chars[i] = str(num_char) if num_char >= 10 else "0" + str(num_char)
-    
-  text_as_nums = int(''.join(text_chars))
-  print(text_as_nums)
+    text_chars[i] = str(message)
   
-  m = text_as_nums ** e
-  ciphertext = m % n
-  
-  return ciphertext
+  return text_chars
 
 
 def rsadecipher(ciphertext, key):
   d = key[0]
   n = key[1]
+  deciphered_text = ""
   
-  m = str((ciphertext ** d) % n)
+  for num in ciphertext:
+    iterations = d
+    char = 1
+    multiplier = int(num)
+    
+    while(iterations > 0):
+      char *= multiplier
+      char %= n
+      iterations -= 1
+    
+    deciphered_text += chr(char)
   
-  if(len(m) % 2 == 1):
-    m = "0" + m
-  
-  split_nums = [m[i:i+2] for i in range(0, len(m), 2)]
-  deciphered_message = split_nums
-  
-  for i, num in enumerate(split_nums):
-    if(int(num) == 0):
-      deciphered_message[i] = " "
-    else:
-      deciphered_message[i] = chr(int(num) + ord('A') - 1)
-  
-  return ''.join(deciphered_message)
+  return ''.join(deciphered_text)

@@ -3,16 +3,21 @@ import pickle
 import numpy as np
 from keras.models import Sequential, load_model
 from keras.layers import Embedding, Conv1D, GlobalAveragePooling1D, Dense
+from keras.utils import to_categorical
 from keras_preprocessing.text import Tokenizer
 from keras_preprocessing.sequence import pad_sequences
 from dataset import create_dataset
+
+# constants
+NUM_CIPHERS = 5
+CLASSES = ['normal', 'caesar', 'vigenere', 'rsa', 'affine']
 
 # Parameters for message classifier
 num_samples = 100_000
 vocab_size = 10_000
 max_length = 120
 embedding_dim = 16
-num_epochs = 4
+num_epochs = 5
 
 class MessageClassifier:
     def __init__(self):
@@ -60,9 +65,12 @@ class MessageClassifier:
         sequences = tokenizer.texts_to_sequences(raw_text)
         padded_sequences = pad_sequences(sequences, maxlen=self.max_length, 
                                         padding=self.padding_type, truncating=self.trunc_type)
+        
+        # convert lables to categories
+        categorical_labels = to_categorical(raw_labels, num_classes=NUM_CIPHERS)
 
         # convert lists into numpy arrays to make it work with TensorFlow 2.
-        return np.array(padded_sequences), np.array(raw_labels)
+        return np.array(padded_sequences), np.array(categorical_labels)
 
     def __build_model(self):
         # get training and testing data
@@ -83,11 +91,11 @@ class MessageClassifier:
             Conv1D(64, 5, activation='relu'),
             GlobalAveragePooling1D(),
             Dense(32, activation='relu'),
-            Dense(1, activation='sigmoid')
+            Dense(NUM_CIPHERS, activation='softmax')
         ])
 
         # compile model
-        model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         model.summary()
 
         # train model
@@ -102,4 +110,5 @@ class MessageClassifier:
     def predict_message(self, message):
         sequences = self.tokenizer.texts_to_sequences([message])
         padded_sequences = pad_sequences(sequences, maxlen=self.max_length, padding=self.padding_type, truncating=self.trunc_type)
-        return self.model.predict(padded_sequences, verbose=0)[0][0]
+        prediction = self.model.predict(padded_sequences, verbose=0)[0]
+        return CLASSES[np.argmax(prediction)]
