@@ -10,7 +10,7 @@ from dataset import create_dataset
 
 # constants
 NUM_CIPHERS = 5
-CLASSES = ['normal', 'caesar', 'vigenere', 'rsa', 'affine']
+CLASSES = ['normal', 'caesar', 'vigenere', 'rsa', 'affine'] # (0 = normal, 1 = caesar, 2 = vigenere, 3 = rsa, 4 = affine)
 
 # Parameters for message classifier
 num_samples = 100_000
